@@ -1,319 +1,249 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KidVerse - Safe Social Space for Kids</title>
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <!-- Bootstrap 5 -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-    />
 
-    <style>
-      :root {
-        --primary: #6c63ff;
-        --secondary: #ff6584;
-        --accent: #4ecdc4;
-        --light: #f8f9fa;
-        --dark: #343a40;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KidVerse - Safe Social Space for Kids</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --secondary: #ff6584;
+      --accent: #4ecdc4;
+      --light: #f8f9fa;
+      --dark: #343a40;
+    }
+
+    .logo {
+      font-family: "Pacifico", cursive;
+      font-size: 38px;
+      background: linear-gradient(to right, #d23593, #50bcef, #0bb74a);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      padding-left: 10px;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    .hero-section {
+      background: url("{% static 'images/kids-bg.jpg' %}") no-repeat center center;
+      background-size: cover;
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+
+    .tagline {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-custom {
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      margin: 10px;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-secondary-custom {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-accent-custom {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-custom:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .features-section {
+      padding: 80px 0;
+      background-color: white;
+    }
+
+    .feature-box {
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      text-align: center;
+      background-color: var(--light);
+      height: 100%;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .feature-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 1.5rem;
+      margin: 0 10px;
+      transition: all 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
       .logo {
-        font-family: "Pacifico", cursive;
-        font-size: 38px;
-        background: linear-gradient(to right, #d23593, #50bcef, #0bb74a);
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-        padding-left: 10px;
-      }
-
-      body {
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        color: var(--dark);
-        overflow-x: hidden;
-      }
-
-      .hero-section {
-        background: url("{% static 'images/kids-bg.jpg' %}") no-repeat center
-          center;
-        background-size: cover;
-        position: relative;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: white;
-      }
-
-      .hero-section::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1;
-      }
-
-      .hero-content {
-        position: relative;
-        z-index: 2;
-        max-width: 800px;
-        padding: 0 20px;
+        font-size: 2.5rem;
       }
 
       .tagline {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Animation */
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
       }
 
-      .btn-custom {
-        padding: 12px 30px;
-        border-radius: 50px;
-        font-weight: 600;
-        margin: 10px;
-        transition: all 0.3s ease;
-        border: none;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      50% {
+        transform: translateY(-15px);
       }
 
-      .btn-primary-custom {
-        background-color: var(--primary);
-        color: white;
+      100% {
+        transform: translateY(0px);
       }
+    }
 
-      .btn-secondary-custom {
-        background-color: var(--secondary);
-        color: white;
-      }
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
 
-      .btn-accent-custom {
-        background-color: var(--accent);
-        color: white;
-      }
-
-      .btn-custom:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      .features-section {
-        padding: 80px 0;
-        background-color: white;
-      }
-
-      .feature-box {
-        padding: 30px;
-        border-radius: 15px;
-        margin-bottom: 30px;
-        transition: all 0.3s ease;
-        text-align: center;
-        background-color: var(--light);
-        height: 100%;
-      }
-
-      .feature-box:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      }
-
-      .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 20px;
-        color: var(--primary);
-      }
-
-      .feature-title {
-        font-weight: 600;
-        margin-bottom: 15px;
-      }
-
-      footer {
-        background-color: var(--dark);
-        color: white;
-        padding: 30px 0;
-        text-align: center;
-      }
-
-      .social-icons a {
-        color: white;
-        font-size: 1.5rem;
-        margin: 0 10px;
-        transition: all 0.3s ease;
-      }
-
-      .social-icons a:hover {
-        color: var(--accent);
-        transform: translateY(-3px);
-      }
-
-      @media (max-width: 768px) {
-        .logo {
-          font-size: 2.5rem;
-        }
-        .tagline {
-          font-size: 1.2rem;
-        }
-      }
-
-      /* Animation */
-      @keyframes float {
-        0% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-15px);
-        }
-        100% {
-          transform: translateY(0px);
-        }
-      }
-
-      .floating {
-        animation: float 3s ease-in-out infinite;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <h1 class="logo">ChatterNest</h1>
-        <p class="tagline">
-          A safe and fun space for kids to connect, share, and grow under
-          parental guidance
-        </p>
-        <div class="d-flex flex-wrap justify-content-center">
-          <a href="parent_signup" class="btn btn-primary-custom btn-custom">
-            <i class="fas fa-user-plus me-2"></i>Parent Signup
-          </a>
-          <a href="parent_login" class="btn btn-secondary-custom btn-custom">
-            <i class="fas fa-sign-in-alt me-2"></i>Parent Login
-          </a>
-          <a href="kid_login" class="btn btn-accent-custom btn-custom">
-            <i class="fas fa-child me-2"></i>Kid Login
-          </a>
-        </div>
+<body>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="logo">ChatterNest</h1>
+      <p class="tagline">
+        A safe and fun space for kids to connect, share, and grow under
+        parental guidance
+      </p>
+      <div class="d-flex flex-wrap justify-content-center">
+        <a href="parent_signup" class="btn btn-primary-custom btn-custom">
+          <i class="fas fa-user-plus me-2"></i>Parent Signup
+        </a>
+        <a href="parent_login" class="btn btn-secondary-custom btn-custom">
+          <i class="fas fa-sign-in-alt me-2"></i>Parent Login
+        </a>
+        <a href="kid_login" class="btn btn-accent-custom btn-custom">
+          <i class="fas fa-child me-2"></i>Kid Login
+        </a>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="feature-box floating">
-              <div class="feature-icon">
-                <i class="fas fa-shield-alt"></i>
-              </div>
-              <h3 class="feature-title">Safe Environment</h3>
-              <p>
-                Parent-monitored platform ensuring a secure space for kids to
-                interact and make friends.
-              </p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="feature-box floating" style="animation-delay: 0.5s">
-              <div class="feature-icon">
-                <i class="fas fa-users"></i>
-              </div>
-              <h3 class="feature-title">Social Learning</h3>
-              <p>
-                Kids develop social skills in a controlled environment with
-                age-appropriate content.
-              </p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="feature-box floating" style="animation-delay: 1s">
-              <div class="feature-icon">
-                <i class="fas fa-eye"></i>
-              </div>
-              <h3 class="feature-title">Parental Oversight</h3>
-              <p>
-                Parents have full visibility and control over their child's
-                activities and connections.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script>
+    // Simple animation on scroll
+    document.addEventListener("DOMContentLoaded", function () {
+      const featureBoxes = document.querySelectorAll(".feature-box");
 
-    <!-- Footer -->
-    <footer>
-      <div class="container">
-        <div class="social-icons mb-3">
-          <a href="#"><i class="fab fa-facebook"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-        <p>© 2023 KidVerse. All rights reserved.</p>
-        <p class="small">
-          Designed with <i class="fas fa-heart text-danger"></i> for kids'
-          safety
-        </p>
-      </div>
-    </footer>
+      function checkScroll() {
+        featureBoxes.forEach((box) => {
+          const boxTop = box.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script>
-      // Simple animation on scroll
-      document.addEventListener("DOMContentLoaded", function () {
-        const featureBoxes = document.querySelectorAll(".feature-box");
+          if (boxTop < windowHeight - 100) {
+            box.style.opacity = "1";
+            box.style.transform = "translateY(0)";
+          }
+        });
+      }
 
-        function checkScroll() {
-          featureBoxes.forEach((box) => {
-            const boxTop = box.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
+      // Initial check
+      checkScroll();
 
-            if (boxTop < windowHeight - 100) {
-              box.style.opacity = "1";
-              box.style.transform = "translateY(0)";
-            }
-          });
-        }
+      // Check on scroll
+      window.addEventListener("scroll", checkScroll);
+    });
+  </script>
+</body>
 
-        // Initial check
-        checkScroll();
-
-        // Check on scroll
-        window.addEventListener("scroll", checkScroll);
-      });
-    </script>
-  </body>
 </html>
