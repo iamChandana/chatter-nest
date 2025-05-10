@@ -38,6 +38,8 @@ urlpatterns = [
     path('remove_friend/<str:friend_id>/', views.remove_friend, name='remove_friend'),
     path('block_friend/<str:friend_id>/', views.block_friend, name='block_friend'),
     path('handle_parent_request/<int:req_id>/<str:action>/', views.handle_parent_friend_request, name='handle_parent_friend_request'),
+    path('get_messages', views.get_messages, name='get_messages'),
+    path('post_message', views.post_message, name='post_message'),
 
     # path('handle_parent_approval/<int:request_id>/<str:action>/', views.handle_parent_approval, name='handle_parent_approval'),
 # path('handle_kid_response/<int:request_id>/<str:action>/', views.handle_kid_response, name='handle_kid_response'),

@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Parent_acc,kid_acc,Post,FriendRequest,Comment,Like,ParentNotification,Message
 from django.http import HttpResponse,HttpResponseRedirect
@@ -6,6 +7,8 @@ from django.contrib.auth.hashers import check_password,make_password
 from django.contrib.auth.models import User,auth
 from django.db import IntegrityError
 from django.http import JsonResponse
+from django.utils import timezone
+import json
 
 
 # Create your views here.
@@ -597,7 +600,7 @@ def chat_page(request):
 from .models import Message, kid_acc
 
 def get_messages(request):
-    print("Session:", request.session.items())  # Check session
+    print("Session:", request.session.items())  
     receiver_id = request.GET.get('receiver_id')
     print("Receiver ID:", receiver_id)
 
@@ -630,6 +633,45 @@ def get_messages(request):
     print("✅ Messages sent")
     return JsonResponse(data, safe=False)
 
+def post_message(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+    if 'kid_id' not in request.session:
+        return JsonResponse({'error': 'Not logged in'}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        receiver_id = data.get('receiver_id')
+        content = data.get('content')
+
+        if not receiver_id or not content:
+            return JsonResponse({'error': 'Missing fields'}, status=400)
+
+        sender = kid_acc.objects.get(kid_id=request.session['kid_id'])
+        receiver = kid_acc.objects.get(kid_id=receiver_id)
+
+        message = Message.objects.create(
+            sender=sender,
+            receiver=receiver,
+            content=content,
+            timestamp=timezone.now()
+        )
+
+        return JsonResponse({
+            'success': True,
+            'message': {
+                'sender': sender.kid_id,
+                'receiver': receiver.kid_id,
+                'content': content,
+                'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            }
+        })
+    
+    except kid_acc.DoesNotExist:
+        return JsonResponse({'error': 'Invalid user'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
 
 from .models import Post, Like, kid_acc

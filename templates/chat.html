@@ -1,194 +1,155 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>WebSocket Chat Test</title>
-  </head>
-  <body>
-    <div style="display: flex; height: 100vh">
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat Box</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .friend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .friend-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      background-color: white;
+    }
+
+    .message-left {
+      background-color: #e9ecef;
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin: 5px 0;
+      max-width: 75%;
+      word-wrap: break-word;
+      text-align: left;
+    }
+
+    .message-right {
+      background-color: #0d6efd;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin: 5px 0;
+      max-width: 75%;
+      word-wrap: break-word;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .chat-input {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-3">
+    <a href="{% url 'kid_dashboard' %}" class="btn btn-secondary">&larr; Back to Dashboard</a>
+  </div>
+
+  <div class="container mt-4">
+    <div class="row">
       <!-- Friends List -->
-      <div
-        style="
-          width: 25%;
-          border-right: 1px solid #ccc;
-          padding: 10px;
-          overflow-y: auto;
-        "
-      >
-        <h4>Your Friends</h4>
+      <div class="col-md-4 border-end" style="height: 500px; overflow-y: auto;">
+        <h5>Your Friends</h5>
         {% for friend in friends %}
-        <div
-          style="margin-bottom: 10px; cursor: pointer"
-          onclick="openChat('{{ friend.kid_id }}', '{{ friend.kid_id }}')"
-        >
-          <img
-            src="{{ friend.profile.url }}"
-            style="
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              margin-right: 10px;
-            "
-          />
-          {{ friend.kid_id }}
+        <div class="friend-item" onclick="selectFriend('{{ friend.kid_id }}')">
+          <img src="{{ friend.profile.url }}"
+            style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;" />
+          <span>{{ friend.kid_id }}</span>
         </div>
         {% empty %}
         <p>No friends yet</p>
         {% endfor %}
       </div>
 
-      <!-- Chat Window -->
-      <div style="width: 75%; padding: 10px">
-        <h2 id="chatWith">Select a friend to chat</h2>
-        <div
-          id="chatMessages"
-          style="
-            border: 1px solid #ccc;
-            height: 300px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-          "
-        ></div>
-        <input id="messageInput" type="text" size="100" disabled />
-        <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+      <!-- Chat Section -->
+      <div class="col-md-8">
+        <h5 id="chat-with-title">Select a friend to chat</h5>
+        <div id="chat-box" class="chat-box mb-3"></div>
+
+        <div class="chat-input d-flex">
+          <textarea id="message-input" class="form-control me-2" rows="1" placeholder="Type your message..."
+            disabled></textarea>
+          <button class="btn btn-primary" onclick="sendMessage()" disabled id="send-btn">Send</button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      // chat.html - Update the WebSocket and message handling
-      let chatSocket = null;
-      let currentReceiverId = null;
-      const currentKidId = "{{ request.session.kid_id }}";
+  <script>
+    const currentKidId = "{{ request.session.kid_id }}";
+    let selectedFriendId = null;
+    let fetchInterval = null;
 
-      function openChat(friendId, friendUsername) {
-        currentReceiverId = friendId;
+    function selectFriend(friendId) {
+      selectedFriendId = friendId;
+      document.getElementById("chat-with-title").textContent = "Chat with " + friendId;
+      document.getElementById("message-input").disabled = false;
+      document.getElementById("send-btn").disabled = false;
+      fetchMessages();
 
-        // Close existing connection if any
-        if (chatSocket) {
-          chatSocket.close();
-        }
+      if (fetchInterval) clearInterval(fetchInterval);
+      fetchInterval = setInterval(fetchMessages, 3000);
+    }
 
-        // Create consistent room name by sorting IDs
-        const roomName = [currentKidId, friendId].sort().join("_");
+    function fetchMessages() {
+      if (!selectedFriendId) return;
 
-        // Establish new WebSocket connection
-        const wsScheme =
-          window.location.protocol === "https:" ? "wss://" : "ws://";
-        const wsPath = `${wsScheme}${window.location.host}/ws/chat/${roomName}/`;
-        chatSocket = new WebSocket(wsPath);
+      fetch(`/Users/get_messages?receiver_id=${selectedFriendId}`)
+        .then(response => response.json())
+        .then(data => {
+          const chatBox = document.getElementById('chat-box');
+          chatBox.innerHTML = '';
 
-        // Update UI
-        document.getElementById(
-          "chatWith"
-        ).innerText = `Chatting with ${friendUsername}`;
-        document.getElementById("messageInput").disabled = false;
-        document.getElementById("sendBtn").disabled = false;
-
-        // WebSocket event handlers
-        chatSocket.onopen = function (e) {
-          console.log("WebSocket connection established");
-          loadPreviousMessages(friendId, friendUsername);
-        };
-
-        chatSocket.onmessage = function (e) {
-          const data = JSON.parse(e.data);
-          displayMessage(data, friendUsername);
-        };
-
-        chatSocket.onclose = function (e) {
-          if (e.wasClean) {
-            console.log(
-              `Connection closed cleanly, code=${e.code}, reason=${e.reason}`
-            );
-          } else {
-            console.error("Connection died");
-            // Attempt reconnection after 5 seconds
-            setTimeout(() => openChat(friendId, friendUsername), 5000);
-          }
-        };
-
-        chatSocket.onerror = function (error) {
-          console.error("WebSocket Error:", error);
-        };
-      }
-
-      function displayMessage(data, friendUsername) {
-        const messageElement = document.createElement("div");
-        const chatMessages = document.getElementById("chatMessages");
-
-        if (data.sender_id === currentKidId) {
-          messageElement.innerHTML = `<b>You:</b> ${data.message}`;
-          messageElement.style.textAlign = "right";
-          messageElement.style.color = "blue";
-        } else {
-          messageElement.innerHTML = `<b>${friendUsername}:</b> ${data.message}`;
-          messageElement.style.textAlign = "left";
-          messageElement.style.color = "green";
-        }
-
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      function sendMessage() {
-        const messageInput = document.getElementById("messageInput");
-        const message = messageInput.value.trim();
-
-        if (message === "" || !currentReceiverId) return;
-
-        if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-          chatSocket.send(
-            JSON.stringify({
-              message: message,
-              sender_id: currentKidId,
-              receiver_id: currentReceiverId,
-            })
-          );
-          messageInput.value = "";
-        } else {
-          console.error(
-            "WebSocket is not open. ReadyState:",
-            chatSocket?.readyState
-          );
-        }
-      }
-
-      function loadPreviousMessages(friendId, friendUsername) {
-        fetch(`/get_messages/?receiver_id=${friendId}`)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((messages) => {
-            const chatMessages = document.getElementById("chatMessages");
-            chatMessages.innerHTML = "";
-
-            messages.forEach((msg) => {
-              displayMessage(
-                {
-                  message: msg.content,
-                  sender_id: msg.sender,
-                  receiver_id: msg.receiver,
-                },
-                friendUsername
-              );
-            });
-          })
-          .catch((error) => {
-            console.error("Error loading messages:", error);
+          data.forEach(msg => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = (msg.sender == currentKidId) ? 'message-right' : 'message-left';
+            msgDiv.innerHTML = `<strong>${msg.sender === currentKidId ? "You" : msg.sender}:</strong> ${msg.content} <br><small>${msg.timestamp}</small>`;
+            chatBox.appendChild(msgDiv);
           });
-      }
 
-      // Event listeners
-      document
-        .getElementById("messageInput")
-        .addEventListener("keypress", function (e) {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    }
+
+    function sendMessage() {
+      const content = document.getElementById('message-input').value.trim();
+      if (content === '' || !selectedFriendId) return;
+
+      fetch('/Users/post_message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ receiver_id: selectedFriendId, content: content })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('message-input').value = '';
+            fetchMessages();
+          } else {
+            alert('Error sending message');
           }
         });
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>
