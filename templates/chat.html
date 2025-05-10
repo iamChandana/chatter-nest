@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket Chat Test</title>
+  </head>
+  <body>
+    <div style="display: flex; height: 100vh">
+      <!-- Friends List -->
+      <div
+        style="
+          width: 25%;
+          border-right: 1px solid #ccc;
+          padding: 10px;
+          overflow-y: auto;
+        "
+      >
+        <h4>Your Friends</h4>
+        {% for friend in friends %}
+        <div
+          style="margin-bottom: 10px; cursor: pointer"
+          onclick="openChat('{{ friend.kid_id }}', '{{ friend.kid_id }}')"
+        >
+          <img
+            src="{{ friend.profile.url }}"
+            style="
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              margin-right: 10px;
+            "
+          />
+          {{ friend.kid_id }}
+        </div>
+        {% empty %}
+        <p>No friends yet</p>
+        {% endfor %}
+      </div>
+
+      <!-- Chat Window -->
+      <div style="width: 75%; padding: 10px">
+        <h2 id="chatWith">Select a friend to chat</h2>
+        <div
+          id="chatMessages"
+          style="
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+          "
+        ></div>
+        <input id="messageInput" type="text" size="100" disabled />
+        <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+      </div>
+    </div>
+
+    <script>
+      // chat.html - Update the WebSocket and message handling
+      let chatSocket = null;
+      let currentReceiverId = null;
+      const currentKidId = "{{ request.session.kid_id }}";
+
+      function openChat(friendId, friendUsername) {
+        currentReceiverId = friendId;
+
+        // Close existing connection if any
+        if (chatSocket) {
+          chatSocket.close();
+        }
+
+        // Create consistent room name by sorting IDs
+        const roomName = [currentKidId, friendId].sort().join("_");
+
+        // Establish new WebSocket connection
+        const wsScheme =
+          window.location.protocol === "https:" ? "wss://" : "ws://";
+        const wsPath = `${wsScheme}${window.location.host}/ws/chat/${roomName}/`;
+        chatSocket = new WebSocket(wsPath);
+
+        // Update UI
+        document.getElementById(
+          "chatWith"
+        ).innerText = `Chatting with ${friendUsername}`;
+        document.getElementById("messageInput").disabled = false;
+        document.getElementById("sendBtn").disabled = false;
+
+        // WebSocket event handlers
+        chatSocket.onopen = function (e) {
+          console.log("WebSocket connection established");
+          loadPreviousMessages(friendId, friendUsername);
+        };
+
+        chatSocket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+          displayMessage(data, friendUsername);
+        };
+
+        chatSocket.onclose = function (e) {
+          if (e.wasClean) {
+            console.log(
+              `Connection closed cleanly, code=${e.code}, reason=${e.reason}`
+            );
+          } else {
+            console.error("Connection died");
+            // Attempt reconnection after 5 seconds
+            setTimeout(() => openChat(friendId, friendUsername), 5000);
+          }
+        };
+
+        chatSocket.onerror = function (error) {
+          console.error("WebSocket Error:", error);
+        };
+      }
+
+      function displayMessage(data, friendUsername) {
+        const messageElement = document.createElement("div");
+        const chatMessages = document.getElementById("chatMessages");
+
+        if (data.sender_id === currentKidId) {
+          messageElement.innerHTML = `<b>You:</b> ${data.message}`;
+          messageElement.style.textAlign = "right";
+          messageElement.style.color = "blue";
+        } else {
+          messageElement.innerHTML = `<b>${friendUsername}:</b> ${data.message}`;
+          messageElement.style.textAlign = "left";
+          messageElement.style.color = "green";
+        }
+
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function sendMessage() {
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value.trim();
+
+        if (message === "" || !currentReceiverId) return;
+
+        if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+          chatSocket.send(
+            JSON.stringify({
+              message: message,
+              sender_id: currentKidId,
+              receiver_id: currentReceiverId,
+            })
+          );
+          messageInput.value = "";
+        } else {
+          console.error(
+            "WebSocket is not open. ReadyState:",
+            chatSocket?.readyState
+          );
+        }
+      }
+
+      function loadPreviousMessages(friendId, friendUsername) {
+        fetch(`/get_messages/?receiver_id=${friendId}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((messages) => {
+            const chatMessages = document.getElementById("chatMessages");
+            chatMessages.innerHTML = "";
+
+            messages.forEach((msg) => {
+              displayMessage(
+                {
+                  message: msg.content,
+                  sender_id: msg.sender,
+                  receiver_id: msg.receiver,
+                },
+                friendUsername
+              );
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading messages:", error);
+          });
+      }
+
+      // Event listeners
+      document
+        .getElementById("messageInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+    </script>
+  </body>
+</html>
