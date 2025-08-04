@@ -1,6 +1,5 @@
 from django.db import models
 # from .models import kid_acc
-
 # Create your models here.
 
 class Parent_acc(models.Model):
@@ -16,7 +15,8 @@ class kid_acc(models.Model):
     profile = models.ImageField(upload_to="Kid_profiles", blank=True, null=True)
     parent = models.ForeignKey(Parent_acc, on_delete=models.CASCADE, related_name='kids')
     friends = models.ManyToManyField('self', symmetrical=True, blank=True)
-    blocked_users = models.ManyToManyField('self', symmetrical=False, blank=True)
+    blocked = models.BooleanField(default=False)
+    bio = models.TextField(blank=True, null=True)
 
 class Post(models.Model):
     user = models.ForeignKey(kid_acc, on_delete=models.CASCADE)  
@@ -30,7 +30,8 @@ class FriendRequest(models.Model):
     to_kid = models.ForeignKey('kid_acc',on_delete=models.CASCADE,related_name='received_requests')
     status = models.CharField(max_length=10,choices=[('pending', 'Pending'),('accepted', 'Accepted'),('rejected', 'Rejected')],default='pending')
     timestamp = models.DateTimeField(auto_now_add=True)
-    parent_approved = models.BooleanField(default=False) 
+    parent_approved = models.BooleanField(default=False)
+    
 
     def __str__(self):
         return f"{self.from_kid.kid_id} to {self.to_kid.kid_id} ({self.status})"
@@ -53,9 +54,6 @@ class ParentNotification(models.Model):
     is_read = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-
-
-from django.contrib.auth.models import User
 
 class Message(models.Model):
     sender = models.ForeignKey(kid_acc, related_name='sent_messages', on_delete=models.CASCADE)

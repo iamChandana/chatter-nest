@@ -1,208 +1,328 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kid Friends</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <style>
-      .container-fluid {
-        padding: 40px;
-      }
 
-      .navbar {
-        background-color: rgb(216, 90, 90);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 10px 0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kid Friends</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <style>
+    .container-fluid {
+      padding: 40px;
+    }
 
-      .navbar-brand {
-        font-size: 1.4rem;
-        font-weight: bold;
-        color: white;
-        margin-right: 10px;
-      }
+    .navbar {
+      background-color: rgb(216, 90, 90);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+    }
 
-      .navbar-nav {
-        gap: 20px;
-      }
+    .navbar-brand {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: white;
+      margin-right: 10px;
+    }
 
-      .nav-link {
-        font-size: 23px;
-        color: #faf6f6;
-        font-weight: 500;
-      }
+    .navbar-nav {
+      gap: 20px;
+    }
 
-      .nav-link:hover {
-        color: black;
-      }
+    .nav-link {
+      font-size: 23px;
+      color: #faf6f6;
+      font-weight: 500;
+    }
 
-      .profile-pic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
+    .nav-link:hover {
+      color: black;
+    }
 
-      .navbar-toggler {
-        border: none;
-      }
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
-      .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); /* Custom toggler icon */
-      }
-      .col-md-6 {
-        border: 2px solid black;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        padding-bottom: 30px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <nav class="navbar navbar-expand-lg">
-        <div class="container">
-          <a class="navbar-brand" href="#"> kidVerse </a>
+    .navbar-toggler {
+      border: none;
+    }
 
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+      /* Custom toggler icon */
+    }
 
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="parent_dashboard">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Notifications</a>
-              </li>
+    .col-md-6 {
+      border: 1px dashed black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding-bottom: 30px;
+      border-radius: 30px;
+    }
 
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="settingsDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Settings
-                </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="settingsDropdown"
-                >
-                  <li>
-                    <a class="dropdown-item" href=""
-                      ><i class="fa-solid fa-user-edit"></i> Edit Profile</a
-                    >
-                  </li>
-                  <li>
-                    <a class="dropdown-item text-danger" href="logout"
-                      ><i class="fa-solid fa-sign-out-alt"></i> Logout</a
-                    >
-                  </li>
-                </ul>
-              </li>
+    .kidverse {
+      font-family: "Pacifico", cursive;
+      font-size: 38px;
+      color: white;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
 
-              <li class="nav-item">
-                <a class="nav-link" href="parent-profile">
-                  <img
-                    src="{{ parent.profile.url }}"
-                    class="profile-pic"
-                    alt="Profile"
-                  />
-                </a>
-              </li>
-            </ul>
-          </div>
+<body>
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <h3 class="kidverse">ChatterNest</h3>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="parent_dashboard">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">Notifications</a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Settings
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+                <li>
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#editProfileModal"
+                    class="dropdown-item text-danger"><i class="fa-solid fa-user-edit"></i> Edit Profile</a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-danger" href="{% url 'parent_logout' %}">
+                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="dropdown-item text-danger" data-bs-toggle="modal"
+                    data-bs-target="#changePasswordModal"><i class="fa fa-key" aria-hidden="true"></i> Change
+                    Password</a>
+                </li>
+                <li>
+                  <a href="kid_accs" class="dropdown-item text-danger"><i class="fa fa-person" aria-hidden="true"></i>
+                    kids
+                    Accounts</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="parent-profile">
+                <img src="{{ parent.profile.url }}" class="profile-pic" alt="Profile" />
+              </a>
+            </li>
+          </ul>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
+  </div>
 
-    <!-- Friends list -->
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <h2>Kids Account List</h2>
-          <div class="kids-list">
-            {% for kid in kids %}
-            <a
-              href="javascript:void(0);"
-              class="list-group-item list-group-item-action d-flex align-items-center"
-              onclick="showFriends('{{ kid.kid_id }}')"
-            >
-              <img
-                src="{{ kid.profile.url }}"
-                width="40"
-                height="40"
-                class="rounded-circle me-3"
-                alt="profile"
-              />
-              <span>{{ kid.kid_id }}</span>
-            </a>
-
-            <!-- Hidden div with friend list -->
-
-            <div id="friends-{{ kid.kid_id }}" style="display: none">
-              {% if kid.friends.all %} {% for friend in kid.friends.all %}
-              <div class="d-flex align-items-center mb-2">
-                <img
-                  src="{{ friend.profile.url }}"
-                  width="35"
-                  height="35"
-                  class="rounded-circle me-2"
-                />
-                <span>{{ friend.kid_id }}</span>
+  <!-- Friends list -->
+  <div class="container">
+    <div class="row">
+      <!-- Left Column: Kids List -->
+      <div class="col-md-6">
+        <h2 class="mb-4">Kids Account List</h2>
+        <div class="d-flex flex-column gap-3">
+          {% for kid in kids %}
+          <div class="card p-3 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-3">
+                <img src="{{ kid.profile.url }}" width="50" height="50" class="rounded-circle border" alt="profile" />
+                <strong style="font-size: 20px;">{{ kid.kid_id }}</strong>
               </div>
-              {% endfor %} {% else %}
+              <button onclick="showFriends('{{ kid.kid_id }}')" class="btn btn-primary btn-sm"
+                style="margin-left: 10px; font-size: 15px;">
+                View Friends
+              </button>
+            </div>
+
+            <!-- Hidden Friends List -->
+            <div id="friends-{{ kid.kid_id }}" style="display: none;" class="list_frnd mt-3">
+              {% if kid.friends.all %}
+              {% for friend in kid.friends.all %}
+              <div class="d-flex align-items-center mb-2 p-2 rounded bg-light shadow-sm">
+                <img src="{{ friend.profile.url }}" width="50" height="50" class="rounded-circle me-2" />
+                <span style="font-size: 20px; margin-left: 10px;"><strong>{{ friend.kid_id }}</strong></span>
+              </div>
+              {% endfor %}
+              {% else %}
               <p class="text-muted">No friends yet.</p>
               {% endif %}
             </div>
-            {% endfor %}
           </div>
+          {% endfor %}
         </div>
+      </div>
 
-        <div class="col-md-6">
-          <h2>Friends List</h2>
-          <div id="friend-display">
-            <br />
-            <p class="text-muted">Click on a kid to view their friends.</p>
-          </div>
+      <!-- Right Column: Friends Display -->
+      <div class="col-md-6">
+        <h2 class="mb-4">Friends List</h2>
+        <div id="friend-display" class="card p-4 shadow-sm">
+          <p class="text-muted mb-0">Click on a kid to view their friends.</p>
         </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      function showFriends(kidId) {
-        const display = document.getElementById("friend-display");
-        const friendData = document.getElementById(`friends-${kidId}`);
+  <!-- Notification Modal -->
+  <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Notifications</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
 
-        display.innerHTML = friendData
-          ? friendData.innerHTML
-          : "<p>No friends found.</p>";
-      }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+        <div class="modal-body">
+          <!-- Kid Posts -->
+          <h6 class="text-primary">Kid Posts</h6>
+          {% for note in notifications %}
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ note.kid.kid_id }}</strong> posted something.
+            </div>
+            <a href="{% url 'view_kid_post_notification' note.id %}" class="btn btn-success btn-sm">View</a>
+          </div>
+          {% empty %}
+          <div class="text-muted">No new post notifications.</div>
+          {% endfor %}
+
+          <hr />
+
+          <!-- Friend Request Approval -->
+          <h6 class="text-primary mt-3"></h6>
+          {% for req in friend_requests %}
+          <div class="alert alert-warning d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ req.from_kid.kid_id }}</strong> wants to be friends
+              with <strong>{{ req.to_kid.kid_id }}</strong>.
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'handle_parent_friend_request' req.id 'accept' %}"
+                class="btn btn-success btn-sm">Approve</a>
+              <a href="{% url 'handle_parent_friend_request' req.id 'reject' %}"
+                class="btn btn-danger btn-sm">Reject</a>
+            </div>
+          </div>
+          {% empty %}
+          <div class="text-muted"></div>
+          {% endfor %}
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit profile  -->
+
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'edit_parent_profile' %}" class="modal-content">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProfileModalLabel">
+            Edit Profile Picture
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="profilePic" class="form-label">Change Profile Picture</label>
+            <input type="file" class="form-control" name="profile" id="profilePic" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" action="{% url 'change_password' %}" class="modal-content">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="changePasswordModalLabel">
+            Change Password
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="oldPassword" class="form-label">Current Password</label>
+            <input type="password" class="form-control" id="oldPassword" name="old_password" required />
+          </div>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="newPassword" name="new_password1" required />
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="new_password2" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            Update Password
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script>
+    function showFriends(kidId) {
+      const display = document.getElementById("friend-display");
+      const friendData = document.getElementById(`friends-${kidId}`);
+
+      display.innerHTML = friendData
+        ? friendData.innerHTML
+        : "<p>No friends found.</p>";
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

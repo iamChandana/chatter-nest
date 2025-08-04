@@ -40,7 +40,7 @@ urlpatterns = [
     path('handle_parent_request/<int:req_id>/<str:action>/', views.handle_parent_friend_request, name='handle_parent_friend_request'),
     path('get_messages', views.get_messages, name='get_messages'),
     path('post_message', views.post_message, name='post_message'),
-
-    # path('handle_parent_approval/<int:request_id>/<str:action>/', views.handle_parent_approval, name='handle_parent_approval'),
-# path('handle_kid_response/<int:request_id>/<str:action>/', views.handle_kid_response, name='handle_kid_response'),
+    path('kid_accs',views.kid_accs,name='kid_accs'),
+    path('block_kid/<str:kid_id>/', views.block_kid, name='block_kid'),
+    path('unblock_kid/<str:kid_id>/', views.unblock_kid, name='unblock_kid'),
 ]

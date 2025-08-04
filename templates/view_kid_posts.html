@@ -1,370 +1,435 @@
 {% load static %} {% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <style>
-      .container-fluid {
-        padding: 40px;
-      }
 
-      .navbar {
-        background-color: rgb(216, 90, 90);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 10px 0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <style>
+    .container-fluid {
+      padding: 40px;
+    }
 
-      .navbar-brand {
-        font-size: 1.4rem;
-        font-weight: bold;
-        color: white;
-        margin-right: 10px;
-      }
+    .navbar {
+      background-color: rgb(216, 90, 90);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+    }
 
-      .navbar-nav {
-        gap: 20px;
-      }
+    .navbar-brand {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: white;
+      margin-right: 10px;
+    }
 
-      .nav-link {
-        font-size: 23px;
-        color: #faf6f6;
-        font-weight: 500;
-      }
+    .navbar-nav {
+      gap: 20px;
+    }
 
-      .nav-link:hover {
-        color: black;
-      }
+    .nav-link {
+      font-size: 23px;
+      color: #faf6f6;
+      font-weight: 500;
+    }
 
-      .profile-pic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
+    .nav-link:hover {
+      color: black;
+    }
 
-      .navbar-toggler {
-        border: none;
-      }
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
-      .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); /* Custom toggler icon */
-      }
+    .navbar-toggler {
+      border: none;
+    }
 
-      .post-display {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 30px 10px;
-      }
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+      /* Custom toggler icon */
+    }
 
-      #post-view {
-        width: 100%;
-        max-width: 500px;
-        background: #fff;
-        border: 1px solid #dbdbdb;
-        border-radius: 12px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-        font-family: "Segoe UI", sans-serif;
-      }
+    .post-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 10px;
+    }
 
-      #profile-details {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 15px;
-      }
+    #post-view {
+      width: 100%;
+      max-width: 500px;
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      font-family: "Segoe UI", sans-serif;
+    }
 
-      #profile-details img {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 1px solid #ccc;
-      }
+    #profile-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+    }
 
-      #profile-details h3 {
-        font-size: 16px;
-        margin: 0;
-      }
+    #profile-details img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #ccc;
+    }
 
-      #profile-details #time {
-        font-size: 12px;
-        color: gray;
-        margin: 0 0 0 auto;
-      }
+    #profile-details h3 {
+      font-size: 16px;
+      margin: 0;
+    }
 
-      #post img {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
+    #profile-details #time {
+      font-size: 12px;
+      color: gray;
+      margin: 0 0 0 auto;
+    }
 
-      #icons {
-        display: flex;
-        align-items: center;
-        padding: 10px 15px;
-        font-size: 22px;
-        gap: 15px;
-      }
+    #post img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
-      #icons i {
-        cursor: pointer;
-        transition: transform 0.2s ease;
-      }
+    #icons {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      font-size: 22px;
+      gap: 15px;
+    }
 
-      #icons i:hover {
-        transform: scale(1.1);
-        color: #e1306c;
-      }
+    #icons i {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
 
-      #post p {
-        padding: 0 15px 15px;
-        font-size: 15px;
-        line-height: 1.4;
-      }
+    #icons i:hover {
+      transform: scale(1.1);
+      color: #e1306c;
+    }
 
-      #post p strong {
-        margin-right: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <nav class="navbar navbar-expand-lg">
-        <div class="container">
-          <a class="navbar-brand" href="#"> kidVerse </a>
+    #post p {
+      padding: 0 15px 15px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
 
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
+    #post p strong {
+      margin-right: 5px;
+    }
+
+    .kidverse {
+      font-family: "Pacifico", cursive;
+      font-size: 38px;
+      color: white;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <h3 class="kidverse">ChatterNest</h3>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="parent_dashboard">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">Notifications</a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Settings
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+                <li>
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#editProfileModal"
+                    class="dropdown-item text-danger"><i class="fa-solid fa-user-edit"></i> Edit Profile</a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-danger" href="{% url 'parent_logout' %}">
+                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="dropdown-item text-danger" data-bs-toggle="modal"
+                    data-bs-target="#changePasswordModal"><i class="fa fa-key" aria-hidden="true"></i> Change
+                    Password</a>
+                </li>
+                <li>
+                  <a href="kid_accs" class="dropdown-item text-danger"><i class="fa fa-person" aria-hidden="true"></i>
+                    kids
+                    Accounts</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="parent-profile">
+                <img src="{{ parent.profile.url }}" class="profile-pic" alt="Profile" />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <!-- Post Diaplay -->
+  <div class="post-display">
+    {% for post in posts %}
+    <div id="post-view">
+      <div id="profile-details">
+        <img src="{{ post.user.profile.url }}" alt="Profile" class="rounded-circle me-2" />
+        <h3>{{post.user.kid_id}}</h3>
+        <p id="time">{{ post.created_at|naturaltime }}</p>
+        {% if post.user.kid_id == kid.kid_id %}
+        <form method="post" action="{% url 'delete_post' post.id %}" style="margin-left: auto">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-danger ms-2"
+            onclick="return confirm('Are you sure you want to delete this post?');">
+            <i class="fas fa-trash"></i>
           </button>
+        </form>
+        {% endif %}
+      </div>
+      <div id="post">
+        <img src="{{post.image.url}}" alt="post" />
+        <div id="icons">
+          <i class="bi bi-heart{% if post.id in liked_posts %}-fill{% endif %}" id="like-btn-{{ post.id }}"
+            data-id="{{ post.id }}" style="cursor: pointer; color: red" onclick="toggleLike(this)"></i>
 
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="parent_dashboard">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Notifications</a>
-              </li>
-
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="settingsDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Settings
-                </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="settingsDropdown"
-                >
-                  <li>
-                    <a class="dropdown-item" href="edit-profile"
-                      ><i class="fa-solid fa-user-edit"></i> Edit Profile</a
-                    >
-                  </li>
-                  <li>
-                    <a class="dropdown-item text-danger" href="logout"
-                      ><i class="fa-solid fa-sign-out-alt"></i> Logout</a
-                    >
-                  </li>
-                </ul>
-              </li>
-
-              <li class="nav-item">
-                <a class="nav-link" href="parent-profile">
-                  <img
-                    src="{{ parent.profile.url }}"
-                    class="profile-pic"
-                    alt="Profile"
-                  />
-                </a>
-              </li>
-            </ul>
-          </div>
+          <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
+          likes
+          <i class="bi bi-chat" data-bs-toggle="modal" data-bs-target="#commentModal-{{ post.id }}"></i>
         </div>
-      </nav>
-    </div>
-    <!-- Post Diaplay -->
-    <div class="post-display">
-      {% for post in posts %}
-      <div id="post-view">
-        <div id="profile-details">
-          <img
-            src="{{ post.user.profile.url }}"
-            alt="Profile"
-            class="rounded-circle me-2"
-          />
-          <h3>{{post.user.kid_id}}</h3>
-          <p id="time">{{ post.created_at|naturaltime }}</p>
-          {% if post.user.kid_id == kid.kid_id %}
-          <form
-            method="post"
-            action="{% url 'delete_post' post.id %}"
-            style="margin-left: auto"
-          >
-            {% csrf_token %}
-            <button
-              type="submit"
-              class="btn btn-sm btn-danger ms-2"
-              onclick="return confirm('Are you sure you want to delete this post?');"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
-          </form>
-          {% endif %}
-        </div>
-        <div id="post">
-          <img src="{{post.image.url}}" alt="post" />
-          <div id="icons">
-            <i
-              class="bi bi-heart{% if post.id in liked_posts %}-fill{% endif %}"
-              id="like-btn-{{ post.id }}"
-              data-id="{{ post.id }}"
-              style="cursor: pointer; color: red"
-              onclick="toggleLike(this)"
-            ></i>
+        <p><strong>{{post.user.kid_id}}</strong> {{post.description}}</p>
+      </div>
+      <!-- <a href="/toggle_like?post_id={{post.id}}"></a> -->
 
-            <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
-            likes
-            <i
-              class="bi bi-chat"
-              data-bs-toggle="modal"
-              data-bs-target="#commentModal-{{ post.id }}"
-            ></i>
-          </div>
-          <p><strong>{{post.user.kid_id}}</strong> {{post.description}}</p>
-        </div>
-        <!-- <a href="/toggle_like?post_id={{post.id}}"></a> -->
-
-        <!-- Comment Modal -->
-        <div
-          class="modal fade"
-          id="commentModal-{{ post.id }}"
-          tabindex="-1"
-          aria-labelledby="commentModalLabel-{{ post.id }}"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="commentModalLabel-{{ post.id }}">
-                  Comments
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+      <!-- Comment Modal -->
+      <div class="modal fade" id="commentModal-{{ post.id }}" tabindex="-1"
+        aria-labelledby="commentModalLabel-{{ post.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="commentModalLabel-{{ post.id }}">
+                Comments
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex">
+              <!-- Left: Post content -->
+              <div class="me-4" style="width: 50%">
+                <img src="{{ post.image.url }}" class="img-fluid mb-2" />
+                <p>
+                  <strong>{{ post.user.kid_id }}</strong>:{{ post.description }}
+                </p>
               </div>
-              <div class="modal-body d-flex">
-                <!-- Left: Post content -->
-                <div class="me-4" style="width: 50%">
-                  <img src="{{ post.image.url }}" class="img-fluid mb-2" />
-                  <p>
-                    <strong>{{ post.user.kid_id }}</strong>: {{ post.description
-                    }}
-                  </p>
-                </div>
-                <!-- Right: Comments -->
-                <div style="width: 50%">
-                  <div style="max-height: 300px; overflow-y: auto">
-                    {% for comment in post.comments.all %}
-                    <div
-                      class="comment-block mt-2 ps-3 border-start d-flex justify-content-between"
-                      data-id="{{ comment.id }}"
-                    >
-                      <div>
-                        {% if comment.user in kids %} Your kid: {{ comment.text
-                        }} {% else %} {{ comment.user.kid_id }}: {{ comment.text
-                        }} {% endif %}
-                      </div>
-                      {% if comment.user.kid_id == kids.kid_id %}
-                      <a
-                        href="#"
-                        class="delete-comment-btn text-danger ms-2"
-                        data-id="{{ comment.id }}"
-                      >
-                        <img
-                          src="/static/images/bin.png"
-                          style="width: 26px; height: 26px"
-                        />
-                      </a>
-
+              <!-- Right: Comments -->
+              <div style="width: 50%">
+                <div style="max-height: 300px; overflow-y: auto">
+                  {% for comment in post.comments.all %}
+                  <div class="comment-block mt-2 ps-3 border-start d-flex justify-content-between"
+                    data-id="{{ comment.id }}">
+                    <div>
+                      {% if comment.user in kids %}
+                      <p>Your kid: {{ comment.text }}</p>
+                      {% elif comment.user in friends %}
+                      <p>{{ comment.user.kid_id }} (Friend): {{ comment.text }}</p>
+                      {% else %}
+                      <p>{{ comment.user.kid_id }}: {{ comment.text }}</p>
                       {% endif %}
+
                     </div>
-                    {% endfor %}
+                    {% if comment.user.kid_id == kids.kid_id %}
+                    <a href="#" class="delete-comment-btn text-danger ms-2" data-id="{{ comment.id }}">
+                      <img src="/static/images/bin.png" style="width: 26px; height: 26px" />
+                    </a>
+
+                    {% endif %}
                   </div>
-                  <form
-                    class="comment-form"
-                    data-post-id="{{ post.id }}"
-                    method="post"
-                  >
-                    {% csrf_token %}
-                    <div class="input-group mt-3">
-                      <input
-                        type="text"
-                        name="content"
-                        class="form-control comment-content"
-                        placeholder="Write a comment..."
-                        style="height: 50px"
-                        required
-                      />
-                      <button
-                        class="btn btn-primary"
-                        type="submit"
-                        style="margin-left: 10px; height: 50px"
-                      >
-                        Post
-                      </button>
-                    </div>
-                  </form>
+                  {% empty %}
+                  <p class="text-muted ps-3">No comments yet.</p>
+                  {% endfor %}
                 </div>
+                <form class="comment-form" data-post-id="{{ post.id }}" method="post">
+                  {% csrf_token %}
+                  <div class="input-group mt-3">
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <hr />
-      {% empty %}
-      <p>No posts available.</p>
-      {% endfor %}
     </div>
+    <hr />
+    {% empty %}
+    <p>No posts available.</p>
+    {% endfor %}
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </body>
+  <!-- Notification Modal -->
+  <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Notifications</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Kid Posts -->
+          <h6 class="text-primary">Kid Posts</h6>
+          {% for note in notifications %}
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ note.kid.kid_id }}</strong> posted something.
+            </div>
+            <a href="{% url 'view_kid_post_notification' note.id %}" class="btn btn-success btn-sm">View</a>
+          </div>
+          {% empty %}
+          <div class="text-muted">No new post notifications.</div>
+          {% endfor %}
+
+          <hr />
+
+          <!-- Friend Request Approval -->
+          <h6 class="text-primary mt-3"></h6>
+          {% for req in friend_requests %}
+          <div class="alert alert-warning d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ req.from_kid.kid_id }}</strong> wants to be friends
+              with <strong>{{ req.to_kid.kid_id }}</strong>.
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'handle_parent_friend_request' req.id 'accept' %}"
+                class="btn btn-success btn-sm">Approve</a>
+              <a href="{% url 'handle_parent_friend_request' req.id 'reject' %}"
+                class="btn btn-danger btn-sm">Reject</a>
+            </div>
+          </div>
+          {% empty %}
+          <div class="text-muted"></div>
+          {% endfor %}
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit profile  -->
+
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'edit_parent_profile' %}" class="modal-content">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProfileModalLabel">
+            Edit Profile Picture
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="profilePic" class="form-label">Change Profile Picture</label>
+            <input type="file" class="form-control" name="profile" id="profilePic" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" action="{% url 'change_password' %}" class="modal-content">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="changePasswordModalLabel">
+            Change Password
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="oldPassword" class="form-label">Current Password</label>
+            <input type="password" class="form-control" id="oldPassword" name="old_password" required />
+          </div>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="newPassword" name="new_password1" required />
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="new_password2" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            Update Password
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+
 </html>

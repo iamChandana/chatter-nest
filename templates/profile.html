@@ -1,4 +1,4 @@
-{% extends 'nav.html' %} {% block content %} {% load humanize %}
+{% extends 'nav.html' %} {% block content %} {% load humanize %} {% load static%}
 <style>
   .profile_view {
     margin-left: 270px;
@@ -146,6 +146,9 @@
         <p><strong>{{ posts.count }}</strong> Posts</p>
         <p><strong>{{ kid.friends.count }}</strong> Friends</p>
       </div>
+      {% if kid.bio %}
+      <p>{{ kid.bio }}</p>
+      {% endif %}
       <a href="#" class="btn btn-outline-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editProfileModal"
         style="margin-right: 20px">Edit Profile</a>
       <a href="#" class="btn btn-outline-success edit-btn" data-bs-toggle="modal"
@@ -344,13 +347,73 @@
   </div>
 </div>
 
-<script>
-  function showTab(tabName) {
-    document.getElementById("posts").style.display = "none";
-    document.getElementById("friends").style.display = "none";
-    document.getElementById(tabName).style.display = "block";
-  }
-</script>
+<!-- Notifications Modal -->
+<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Friend Requests</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if friendrequest %}
+        {% for req in friendrequest %}
+
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ req.from_kid_id }}</strong> sent you a friend
+            request.
+          </div>
+          <div class="d-flex gap-2">
+            <a href="{% url 'handle_request' req.id 'accept' %}" class="btn btn-success btn-sm">Accept</a>
+            <a href="{% url 'handle_request' req.id 'reject' %}" class="btn btn-danger btn-sm">Reject</a>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-muted text-center">No friend requests.</p>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- post creation -->
+<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="postModalLabel">Create a New Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'create_post' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="image" class="form-label">Upload Image</label>
+            <input type="file" class="form-control" name="image" id="image">
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Additional Text</label>
+            <textarea class="form-control" name="description" id="description" rows="3"
+              placeholder="Describe your post..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-success">Post</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Search Modal -->
 <div class="modal fade {% if search_results %}show d-block{% endif %}" id="searchModal" tabindex="-1"
@@ -360,7 +423,7 @@
       <form id="search-form">
         <div class="modal-header">
           <h5 class="modal-title">Search People</h5>
-          <a href="{% url 'kid_dashboard' %}" class="btn-close"></a>
+          <a href="" class="btn-close"></a>
         </div>
 
         <div class="modal-body">
@@ -394,94 +457,181 @@
   </div>
 </div>
 
-<!-- Search Modal -->
-<script>
-  window.addEventListener("load", function () {
-    if (window.location.hash === "#searchModal") {
-      const modal = new bootstrap.Modal(document.getElementById("searchModal"));
-      modal.show();
+
+<div class="content">
+  <!-- Post Diaplay -->
+  <div class="post-display">
+    {% for post in posts %}
+    <div id="post-view">
+      <div id="profile-details">
+        <img src="{{ post.user.profile.url }}" alt="Profile" class="rounded-circle me-2">
+        <h3>{{post.user.kid_id}}</h3>
+        <p id="time">{{ post.created_at|naturaltime }}</p>
+        {% if post.user.kid_id == kid.kid_id %}
+        <form method="post" action="{% url 'delete_post' post.id %}" style="margin-left:auto;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-danger ms-2"
+            onclick="return confirm('Are you sure you want to delete this post?');">
+            <i class="fas fa-trash"></i></button>
+        </form>
+        {% endif %}
+      </div>
+      <div id="post">
+        <img src="{{post.image.url}}" alt="post">
+        <div id="icons">
+          <i class="bi bi-heart{% if post.id in liked_posts %}-fill{% endif %}" id="like-btn-{{ post.id }}"
+            data-id="{{ post.id }}" style="cursor: pointer; color: red;" onclick="toggleLike(this)"></i>
+          <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span> likes
+          <i class="bi bi-chat" data-bs-toggle="modal" data-bs-target="#commentModal-{{ post.id }}"></i>
+        </div>
+        <p><strong>{{post.user.kid_id}}</strong> {{post.description}}</p>
+      </div>
+      <!-- <a href="/toggle_like?post_id={{post.id}}"></a> -->
+
+      <!-- Comment Modal -->
+      <div class="modal fade" id="commentModal-{{ post.id }}" tabindex="-1"
+        aria-labelledby="commentModalLabel-{{ post.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="commentModalLabel-{{ post.id }}">Comments</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex">
+              <!-- Left: Post content -->
+              <div class="me-4" style="width: 50%;">
+                <img src="{{ post.image.url }}" class="img-fluid mb-2" />
+                <p><strong>{{ post.user.kid_id }}</strong>: {{ post.description }}</p>
+              </div>
+              <!-- Right: Comments -->
+              <div style="width: 50%;">
+                <div style="max-height: 300px; overflow-y: auto;">
+                  {% for comment in post.comments.all %}
+                  <div class="comment-block mt-2 ps-3 border-start d-flex justify-content-between"
+                    data-id="{{ comment.id }}">
+                    <div>
+                      {% if comment.user.kid_id == kid.kid_id %}
+                      You: {{ comment.text }}
+                      {% else %}
+                      {{ comment.user.kid_id }}: {{ comment.text }}
+                      {% endif %}
+                    </div>
+                    {% if comment.user.kid_id == kid.kid_id %}
+                    <a href="#" class="delete-comment-btn text-danger ms-2" data-id="{{ comment.id }}">
+                      <img src="/static/images/bin.png" style="width: 26px; height: 26px;" />
+                    </a>
+                    {% endif %}
+                  </div>
+                  {% endfor %}
+                </div>
+                <form class="comment-form" data-post-id="{{ post.id }}" method="post">
+                  {% csrf_token %}
+                  <div class="input-group mt-3">
+                    <input type="text" name="content" class="form-control comment-content"
+                      placeholder="Write a comment..." style="height: 50px;" required>
+                    <button class="btn btn-primary" type="submit" style="margin-left: 10px;height: 50px;">Post</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    {% empty %}
+    <p>No posts available.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Search Modal -->
+  <script>
+    window.addEventListener("load", function () {
+      if (window.location.hash === "#searchModal") {
+        const modal = new bootstrap.Modal(document.getElementById("searchModal"));
+        modal.show();
+      }
+    });
+  </script>
+
+  <!-- Like feature script  -->
+  <script>
+    function toggleLike(el) {
+      const postId = el.dataset.id;
+
+      fetch(`/Users/like/${postId}/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Invalid response");
+          return response.json();
+        })
+        .then((data) => {
+          const icon = document.getElementById(`like-btn-${postId}`);
+          const count = document.getElementById(`like-count-${postId}`);
+
+          if (data.liked) {
+            icon.classList.add("bi-heart-fill");
+            icon.classList.remove("bi-heart");
+          } else {
+            icon.classList.add("bi-heart");
+            icon.classList.remove("bi-heart-fill");
+          }
+          count.innerText = data.like_count;
+        })
+        .catch((err) => {
+          console.error("Toggle like error:", err);
+        });
     }
-  });
-</script>
 
-<!-- Like feature script  -->
-<script>
-  function toggleLike(el) {
-    const postId = el.dataset.id;
-
-    fetch(`/Users/like/${postId}/`, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Invalid response");
-        return response.json();
-      })
-      .then((data) => {
-        const icon = document.getElementById(`like-btn-${postId}`);
-        const count = document.getElementById(`like-count-${postId}`);
-
-        if (data.liked) {
-          icon.classList.add("bi-heart-fill");
-          icon.classList.remove("bi-heart");
-        } else {
-          icon.classList.add("bi-heart");
-          icon.classList.remove("bi-heart-fill");
-        }
-        count.innerText = data.like_count;
-      })
-      .catch((err) => {
-        console.error("Toggle like error:", err);
-      });
-  }
-
-  // CSRF helper
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let cookie of cookies) {
-        if (cookie.trim().startsWith(name + "=")) {
-          cookieValue = decodeURIComponent(cookie.split("=")[1]);
-          break;
+    // CSRF helper
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+          if (cookie.trim().startsWith(name + "=")) {
+            cookieValue = decodeURIComponent(cookie.split("=")[1]);
+            break;
+          }
         }
       }
+      return cookieValue;
     }
-    return cookieValue;
-  }
-</script>
+  </script>
 
-<!-- Comment Modal script-->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".comment-form").forEach((form) => {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent full page reload
+  <!-- Comment Modal script-->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".comment-form").forEach((form) => {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault(); // Prevent full page reload
 
-        const postId = this.dataset.postId;
-        const input = this.querySelector(".comment-content");
-        const content = input.value;
-        const csrftoken = getCookie("csrftoken");
+          const postId = this.dataset.postId;
+          const input = this.querySelector(".comment-content");
+          const content = input.value;
+          const csrftoken = getCookie("csrftoken");
 
-        if (!content.trim()) return;
+          if (!content.trim()) return;
 
-        fetch(`/Users/comment/${postId}/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": csrftoken,
-          },
-          body: new URLSearchParams({ content }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              const commentsContainer = this.closest(
-                ".modal-body"
-              ).querySelector('[style*="overflow-y"]');
-              const commentHTML = `
+          fetch(`/Users/comment/${postId}/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-CSRFToken": csrftoken,
+            },
+            body: new URLSearchParams({ content }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                const commentsContainer = this.closest(
+                  ".modal-body"
+                ).querySelector('[style*="overflow-y"]');
+                const commentHTML = `
               <div class="comment-block mt-2 ps-3 border-start d-flex justify-content-between">
                 <div>You: ${data.comment_text}</div>
                 <a href="" class="delete-comment-btn" data-id="${data.comment_id}" style="text-decoration: none;">
@@ -489,136 +639,154 @@
                 </a>
               </div>
             `;
-              commentsContainer.insertAdjacentHTML("beforeend", commentHTML);
-              input.value = "";
-            }
-          })
-          .catch((error) => console.error("Error posting comment:", error));
+                commentsContainer.insertAdjacentHTML("beforeend", commentHTML);
+                input.value = "";
+              }
+            })
+            .catch((error) => console.error("Error posting comment:", error));
+        });
       });
     });
-  });
-</script>
+  </script>
 
-<!-- Comment delete -->
+  <!-- Comment delete -->
 
-<script>
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let cookie of cookies) {
-        if (cookie.trim().startsWith(name + "=")) {
-          cookieValue = decodeURIComponent(cookie.split("=")[1]);
-          break;
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+          if (cookie.trim().startsWith(name + "=")) {
+            cookieValue = decodeURIComponent(cookie.split("=")[1]);
+            break;
+          }
         }
       }
+      return cookieValue;
     }
-    return cookieValue;
-  }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const csrftoken = getCookie("csrftoken");
+    document.addEventListener("DOMContentLoaded", function () {
+      const csrftoken = getCookie("csrftoken");
 
-    // Event delegation - listen on document for any delete button clicks
-    document.addEventListener("click", function (e) {
-      const btn = e.target.closest(".delete-comment-btn");
+      // Event delegation - listen on document for any delete button clicks
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".delete-comment-btn");
 
-      if (btn) {
-        e.preventDefault();
+        if (btn) {
+          e.preventDefault();
 
-        const commentId = btn.dataset.id;
-        const commentBlock = btn.closest(".comment-block");
+          const commentId = btn.dataset.id;
+          const commentBlock = btn.closest(".comment-block");
 
-        // ✅ Check if both btn and commentBlock exist
-        if (!btn || !commentBlock) {
-          console.error("Delete button or comment block not found.");
-          return;
+          // ✅ Check if both btn and commentBlock exist
+          if (!btn || !commentBlock) {
+            console.error("Delete button or comment block not found.");
+            return;
+          }
+
+          if (!confirm("Are you sure you want to delete this comment?")) return;
+
+          fetch(`/Users/delete_comment/${commentId}/`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrftoken,
+              "Content-Type": "application/json",
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                commentBlock.style.transition = "opacity 0.3s ease";
+                commentBlock.style.opacity = "0";
+                setTimeout(() => commentBlock.remove(), 300);
+              } else {
+                alert(data.error || "Failed to delete comment.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting comment:", error);
+              alert("Error deleting comment: " + error.message);
+            });
         }
+      });
+    });
+  </script>
 
-        if (!confirm("Are you sure you want to delete this comment?")) return;
+  <!-- Search  -->
 
-        fetch(`/Users/delete_comment/${commentId}/`, {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": csrftoken,
-            "Content-Type": "application/json",
-          },
-        })
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchForm = document.getElementById("search-form");
+      const searchInput = document.getElementById("search-input");
+      const resultsContainer = document.getElementById("search-results");
+
+      searchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        // Clear previous results
+        resultsContainer.innerHTML = '<div class="text-muted">Searching...</div>';
+
+        fetch(`/Users/search_kids/?search_query=${encodeURIComponent(query)}`)
           .then((res) => res.json())
           .then((data) => {
-            if (data.success) {
-              commentBlock.style.transition = "opacity 0.3s ease";
-              commentBlock.style.opacity = "0";
-              setTimeout(() => commentBlock.remove(), 300);
-            } else {
-              alert(data.error || "Failed to delete comment.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error deleting comment:", error);
-            alert("Error deleting comment: " + error.message);
-          });
-      }
-    });
-  });
-</script>
+            resultsContainer.innerHTML = "";
 
-<!-- Search  -->
+            if (data.results && data.results.length > 0) {
+              data.results.forEach((user) => {
+                const div = document.createElement("div");
+                div.className =
+                  "list-group-item d-flex align-items-center justify-content-between p-2";
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const searchForm = document.getElementById("search-form");
-    const searchInput = document.getElementById("search-input");
-    const resultsContainer = document.getElementById("search-results");
-
-    searchForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const query = searchInput.value.trim();
-      if (!query) return;
-
-      // Clear previous results
-      resultsContainer.innerHTML = '<div class="text-muted">Searching...</div>';
-
-      fetch(`/Users/search_kids/?search_query=${encodeURIComponent(query)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          resultsContainer.innerHTML = "";
-
-          if (data.results && data.results.length > 0) {
-            data.results.forEach((user) => {
-              const div = document.createElement("div");
-              div.className =
-                "list-group-item d-flex align-items-center justify-content-between p-2";
-
-              div.innerHTML = `
+                div.innerHTML = `
                 <div class="d-flex align-items-center gap-2">
                   <img src="${user.profile
-                }" width="40" height="40" style="border-radius: 50%;">
+                  }" width="40" height="40" style="border-radius: 50%;">
                   <span style="font-size: 18px;">${user.kid_id}</span>
                 </div>
                 ${user.is_self
-                  ? `<span class="text-muted" style="font-size:20px;color:black;">This is you</span>`
-                  : `<a class="btn btn-success btn-sm" href="/Users/user_profile/${user.kid_id}/">View</a>
+                    ? `<span class="text-muted" style="font-size:20px;color:black;">This is you</span>`
+                    : `<a class="btn btn-success btn-sm" href="/Users/user_profile/${user.kid_id}/">View</a>
 `
-                }
+                  }
               `;
 
-              resultsContainer.appendChild(div);
-            });
-          } else {
+                resultsContainer.appendChild(div);
+              });
+            } else {
+              resultsContainer.innerHTML =
+                '<div class="text-danger">No users found</div>';
+            }
+          })
+          .catch((error) => {
+            console.error("Search error:", error);
             resultsContainer.innerHTML =
-              '<div class="text-danger">No users found</div>';
-          }
-        })
-        .catch((error) => {
-          console.error("Search error:", error);
-          resultsContainer.innerHTML =
-            '<div class="text-danger">Error fetching results.</div>';
-        });
+              '<div class="text-danger">Error fetching results.</div>';
+          });
+      });
     });
-  });
-</script>
+  </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Notification Modal -->
+  <script>
+    window.addEventListener('load', function () {
+      if (window.location.hash === '#notificationsModal') {
+        const modal = new bootstrap.Modal(document.getElementById('notificationsModal'));
+        modal.show();
+      }
+    });
+  </script>
 
-{% endblock %}
+  <script>
+    function showTab(tabName) {
+      document.getElementById("posts").style.display = "none";
+      document.getElementById("friends").style.display = "none";
+      document.getElementById(tabName).style.display = "block";
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  {% endblock %}
